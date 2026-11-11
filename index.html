@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petualangan Alam Hewan - Belajar Bahasa Arab</title>
+  
+  <!-- Google Fonts: Fredoka (Cute Latin) + Changa (Cute Arabic) + Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Fredoka:wght@400;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="user-badge" id="userBadge" style="display:none;">
+        <span class="user-avatar">🦁</span>
+        <span id="displayPlayerName">Murid</span>
+      </div>
+      <div class="score-badge" id="scoreBadge" style="display:none;">
+        ⭐ <span id="displayScore">0</span>
+      </div>
+      <button class="btn-teacher-lock" id="btnOpenTeacher" title="Menu Guru">🔐 Guru</button>
+    </header>
+
+    <!-- SCREEN 1: LOGIN NAMA -->
+    <section class="screen active" id="screenLogin">
+      <div class="card cute-card welcome-card">
+        <div class="mascot-bounce">🦒</div>
+        <h1 class="game-title">عَالَمُ الحَيَوَانَاتِ</h1>
+        <h2 class="game-subtitle">Petualangan Bahasa Arab</h2>
+        <p class="game-desc">Ayo kenali hewan ciptaan Allah dan susun kalimat bahasa Arab!</p>
+        
+        <div class="input-group">
+          <label for="playerNameInput">Siapa namamu, petualang cilik?</label>
+          <input type="text" id="playerNameInput" placeholder="Tulis namamu di sini..." maxlength="25">
+        </div>
+
+        <button class="btn btn-primary btn-big" id="btnStartGame">Mulai Petualangan! 🚀</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: GAMEPLAY -->
+    <section class="screen" id="screenGame">
+      <div class="card game-card">
+        
+        <div class="game-progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="level-indicator">Soal <span id="currentQNum">1</span> / <span id="totalQNum">5</span></div>
+
+        <!-- Wadah Gambar Visual Nyata -->
+        <div class="image-wrapper">
+          <img id="animalImage" src="" alt="Foto Hewan Asli" class="animal-photo">
+          <button class="btn-audio-circle" id="btnPlaySound" title="Dengarkan Penutur Asli">
+            🔊
+          </button>
+        </div>
+
+        <p class="instruction-text">Dengarkan suaranya, lalu susun kalimat berikut dari <strong>KANAN ke KIRI</strong>:</p>
+
+        <!-- Area Hasil Susunan (RTL: Kanan ke Kiri) -->
+        <div class="arabic-dropzone rtl" id="dropZone" dir="rtl">
+          <!-- Kata yang dipilih akan masuk ke sini -->
+        </div>
+
+        <!-- Tombol Pilihan Kata Acak -->
+        <div class="word-bank rtl" id="wordBank" dir="rtl">
+          <!-- Tombol kata dinamis -->
+        </div>
+
+        <div class="feedback-msg" id="feedbackMsg"></div>
+
+        <div class="game-actions">
+          <button class="btn btn-warning" id="btnResetWords">Ulangi ↺</button>
+          <button class="btn btn-success" id="btnCheckAnswer">Periksa Jawaban ✓</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: HASIL AKHIR & SERTIFIKAT -->
+    <section class="screen" id="screenResult">
+      <div class="card cute-card result-card">
+        <div class="trophy-bounce">🏆</div>
+        <h2>Mumtaz! Luar Biasa!</h2>
+        <p class="result-name" id="finalName">Nama Siswa</p>
+        
+        <div class="final-score-box">
+          <span>Skor Akhir:</span>
+          <span class="big-score" id="finalScore">100</span>
+        </div>
+
+        <p id="starRating">⭐⭐⭐⭐⭐</p>
+
+        <div class="btn-group-vertical">
+          <button class="btn btn-primary" id="btnPlayAgain">Main Lagi 🎮</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: DASHBOARD GURU (DILINDUNGI PIN) -->
+    <section class="screen" id="screenTeacher">
+      <div class="card teacher-card">
+        <div class="teacher-header">
+          <h2>📊 Rekap Nilai Siswa (Khusus Guru)</h2>
+          <button class="btn btn-danger btn-sm" id="btnCloseTeacher">Tutup ✖</button>
+        </div>
+
+        <!-- Modal Masukkan PIN Guru -->
+        <div id="pinBox" class="pin-section">
+          <p>Masukkan PIN Guru untuk melihat data:</p>
+          <div class="pin-input-group">
+            <input type="password" id="teacherPinInput" placeholder="PIN (Default: 1234)" maxlength="6">
+            <button class="btn btn-primary" id="btnSubmitPin">Buka Kunci 🔓</button>
+          </div>
+          <p class="pin-hint">*Default PIN: <b>1234</b></p>
+        </div>
+
+        <!-- Konten Tabel Rekap Nilai -->
+        <div id="recapTableWrapper" style="display:none;">
+          <div class="dashboard-actions">
+            <button class="btn btn-excel" id="btnExportCSV">📥 Unduh Format Excel (.CSV)</button>
+            <button class="btn btn-outline-danger" id="btnClearData">🗑️ Kosongkan Data</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="recap-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama Siswa</th>
+                  <th>Nilai</th>
+                  <th>Bintang</th>
+                  <th>Waktu Selesai</th>
+                </tr>
+              </thead>
+              <tbody id="recapTableBody">
+                <!-- Data murid masuk ke sini -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
